@@ -145,8 +145,8 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <div style={{ background: '#0a4a24', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>© 2026 HITEC Institute of Medical Sciences, Taxila · All rights reserved</p>
-        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginTop: '4px' }}>Built by Paragon South</p>
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>© 2026 HITEC Institute of Medical Sciences, HITEC Research Society · All rights reserved</p>
+        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginTop: '4px' }}>Built by @Faateh_Aurangzeb</p>
       </div>
 
     </div>

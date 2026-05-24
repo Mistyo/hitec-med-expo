@@ -5,6 +5,99 @@ import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+const groups = [
+  { label: 'BDS', options: ['BDS 1st Year', 'BDS 2nd Year', 'BDS 3rd Year', 'BDS 4th Year'] },
+  { label: 'MBBS', options: ['MBBS 1st Year', 'MBBS 2nd Year', 'MBBS 3rd Year', 'MBBS 4th Year', 'MBBS 5th Year'] },
+  { label: 'Postgraduate', options: ['House Officer', 'FCPS Part 1', 'FCPS Part 2', 'MS/MD', 'MPhil', 'PhD'] },
+  { label: 'Nursing & Allied', options: ['BSN 1st Year', 'BSN 2nd Year', 'BSN 3rd Year', 'BSN 4th Year', 'Allied Health Sciences'] },
+]
+
+function CustomSelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div
+        onClick={() => setOpen(!open)}
+        style={{
+          width: '100%',
+          padding: '10px 14px',
+          border: `1.5px solid ${open ? '#0d5e2e' : '#cce0c0'}`,
+          borderRadius: open ? '8px 8px 0 0' : '8px',
+          fontSize: '14px',
+          background: '#fafefa',
+          cursor: 'pointer',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          color: value ? '#1a2e1a' : '#9ab89a',
+          userSelect: 'none',
+        }}
+      >
+        <span>{value || 'Select year...'}</span>
+        <span style={{
+          fontSize: '10px',
+          color: '#6b8c6b',
+          transition: 'transform 0.2s',
+          transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          display: 'inline-block'
+        }}>▼</span>
+      </div>
+
+      {open && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          background: '#fff',
+          border: '1.5px solid #0d5e2e',
+          borderTop: 'none',
+          borderRadius: '0 0 8px 8px',
+          zIndex: 100,
+          maxHeight: '260px',
+          overflowY: 'auto',
+          boxShadow: '0 8px 24px rgba(13,94,46,0.12)',
+        }}>
+          {groups.map(group => (
+            <div key={group.label}>
+              <div style={{
+                padding: '6px 14px',
+                fontSize: '11px',
+                fontWeight: '600',
+                color: '#0d5e2e',
+                background: '#f0f7eb',
+                textTransform: 'uppercase',
+                letterSpacing: '0.8px',
+              }}>
+                {group.label}
+              </div>
+              {group.options.map(opt => (
+                <div
+                  key={opt}
+                  onClick={() => { onChange(opt); setOpen(false) }}
+                  style={{
+                    padding: '9px 14px 9px 20px',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    color: value === opt ? '#0d5e2e' : '#1a2e1a',
+                    background: value === opt ? '#e8f5e2' : '#fff',
+                    fontWeight: value === opt ? '500' : '400',
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.background = '#f0f7eb')}
+                  onMouseOut={e => (e.currentTarget.style.background = value === opt ? '#e8f5e2' : '#fff')}
+                >
+                  {value === opt ? '✓ ' : ''}{opt}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function SignupPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -19,7 +112,7 @@ export default function SignupPage() {
     password: '',
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -27,6 +120,12 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+
+    if (!form.year_of_study) {
+      setError('Please select your year of study.')
+      setLoading(false)
+      return
+    }
 
     const { error } = await supabase.auth.signUp({
       email: form.email,
@@ -52,7 +151,7 @@ export default function SignupPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#f0f7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       <div style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '16px', padding: '2.5rem', width: '100%', maxWidth: '420px' }}>
-        
+
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', color: '#0d5e2e', fontWeight: '600' }}>
             Create Account
@@ -80,7 +179,7 @@ export default function SignupPage() {
                 value={form[field.name as keyof typeof form]}
                 onChange={handleChange}
                 required
-                style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #cce0c0', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
+                style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #cce0c0', borderRadius: '8px', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
           ))}
@@ -89,22 +188,10 @@ export default function SignupPage() {
             <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#2a4a2a', marginBottom: '5px' }}>
               Year of Study
             </label>
-            <select
-              name="year_of_study"
+            <CustomSelect
               value={form.year_of_study}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #cce0c0', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
-            >
-              <option value="">Select year...</option>
-              <option>1st Year MBBS/BDS</option>
-              <option>2nd Year</option>
-              <option>3rd Year</option>
-              <option>4th Year</option>
-              <option>Final Year</option>
-              <option>House Officer</option>
-              <option>Postgraduate</option>
-            </select>
+              onChange={(val) => setForm({ ...form, year_of_study: val })}
+            />
           </div>
 
           <div style={{ background: '#f0f7eb', border: '1.5px dashed #7abf7a', borderRadius: '10px', padding: '1rem', textAlign: 'center', margin: '1rem 0' }}>
