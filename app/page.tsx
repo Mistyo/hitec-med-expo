@@ -43,7 +43,7 @@ export default function HomePage() {
 
       {/* HERO */}
       <div style={{ background: 'linear-gradient(160deg, #0a4a24 0%, #0d5e2e 50%, #1a7a3e 100%)', padding: '5rem 2rem 4rem', textAlign: 'center', color: '#fff', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px', pointerEvents: 'none' }} />
         <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
           HITEC Institute of Medical Sciences · Taxila
         </p>
