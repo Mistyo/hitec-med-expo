@@ -1,17 +1,37 @@
+'use client'
+
 import Link from 'next/link'
+import { useTheme } from './context/theme'
 
 export default function HomePage() {
+  const { dark, toggleTheme } = useTheme()
+
+  const t = {
+    bg: dark ? '#0a1a0e' : '#f8faf6',
+    card: dark ? '#0f2d14' : '#fff',
+    cardBorder: dark ? '#1a4a20' : '#d4e8cc',
+    text: dark ? '#e8f5e2' : '#1a2e1a',
+    muted: dark ? '#6b9a6b' : '#6b8c6b',
+    strip: dark ? '#0a1a0e' : '#fff',
+    stripBorder: dark ? '#1a4a20' : '#e0edd8',
+    sectionBg: dark ? '#0d2214' : '#fff',
+  }
+
   return (
-    <div style={{ minHeight: '100vh', background: '#f8faf6', fontFamily: 'DM Sans, sans-serif' }}>
-      
+    <div style={{ minHeight: '100vh', background: t.bg, fontFamily: 'DM Sans, sans-serif', transition: 'background 0.3s' }}>
+
       {/* NAV */}
       <nav style={{ background: '#0d5e2e', padding: '0 2rem', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
-            HITEC Med Expo 2026
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
+          HITEC Med Expo 2026
+        </span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button
+            onClick={toggleTheme}
+            style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
+          >
+            {dark ? '☀️ Light' : '🌙 Dark'}
+          </button>
           <Link href="/login" style={{ padding: '7px 18px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', textDecoration: 'none' }}>
             Sign In
           </Link>
@@ -44,45 +64,37 @@ export default function HomePage() {
       </div>
 
       {/* INFO STRIP */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #e0edd8', display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div style={{ background: t.strip, borderBottom: `1px solid ${t.stripBorder}`, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', transition: 'background 0.3s' }}>
         {[
           { label: 'Date', value: 'July 2026' },
           { label: 'Venue', value: 'HITEC IMS, Taxila' },
           { label: 'Submission Deadline', value: 'June 15, 2026' },
           { label: 'Registration Fee', value: 'PKR 1,500' },
         ].map(item => (
-          <div key={item.label} style={{ padding: '1.25rem 2rem', textAlign: 'center', borderRight: '1px solid #e0edd8' }}>
-            <p style={{ fontSize: '11px', color: '#6b8c6b', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase' }}>{item.label}</p>
+          <div key={item.label} style={{ padding: '1.25rem 2rem', textAlign: 'center', borderRight: `1px solid ${t.stripBorder}` }}>
+            <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase' }}>{item.label}</p>
             <p style={{ fontSize: '15px', fontWeight: '600', color: '#0d5e2e', marginTop: '3px' }}>{item.value}</p>
           </div>
         ))}
       </div>
 
       {/* ABOUT */}
-      <div style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto' }}>
-        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>
-          About the Expo
-        </p>
-        <p style={{ fontSize: '11px', color: '#6b8c6b', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-          HITEC Medical Research Exposition 2026
-        </p>
-        <p style={{ fontSize: '15px', color: '#3a4a3a', lineHeight: '1.8', marginBottom: '1rem' }}>
+      <div style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto', transition: 'all 0.3s' }}>
+        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>About the Expo</p>
+        <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '1.5rem' }}>HITEC Medical Research Exposition 2026</p>
+        <p style={{ fontSize: '15px', color: t.text, lineHeight: '1.8', marginBottom: '1rem' }}>
           The HITEC Med Expo is an annual platform dedicated to showcasing groundbreaking research by medical and dental students across Pakistan. The event brings together future healthcare leaders to present, discuss, and celebrate scientific discovery.
         </p>
-        <p style={{ fontSize: '15px', color: '#3a4a3a', lineHeight: '1.8' }}>
+        <p style={{ fontSize: '15px', color: t.text, lineHeight: '1.8' }}>
           Open to MBBS, BDS, and postgraduate students from all recognized medical institutions in Pakistan. Abstracts are reviewed by a panel of faculty and senior clinicians.
         </p>
       </div>
 
       {/* WHY PARTICIPATE */}
-      <div style={{ background: '#fff', padding: '4rem 2rem' }}>
+      <div style={{ background: t.sectionBg, padding: '4rem 2rem', transition: 'background 0.3s' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>
-            Why Participate?
-          </p>
-          <p style={{ fontSize: '11px', color: '#6b8c6b', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>
-            Open to all medical and dental students across Pakistan
-          </p>
+          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>Why Participate?</p>
+          <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>Open to all medical and dental students across Pakistan</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
             {[
               { icon: '🔬', title: 'Present Research', desc: 'Oral and poster presentation categories across all specialties' },
@@ -90,10 +102,10 @@ export default function HomePage() {
               { icon: '🤝', title: 'Network', desc: 'Connect with faculty, researchers, and students nationwide' },
               { icon: '📄', title: 'Get Published', desc: 'Selected abstracts featured in the official expo proceedings' },
             ].map(card => (
-              <div key={card.title} style={{ background: '#f8faf6', border: '1px solid #d4e8cc', borderRadius: '12px', padding: '1.25rem' }}>
+              <div key={card.title} style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '12px', padding: '1.25rem', transition: 'all 0.3s' }}>
                 <div style={{ fontSize: '28px', marginBottom: '0.75rem' }}>{card.icon}</div>
-                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#1a2e1a', marginBottom: '6px' }}>{card.title}</h4>
-                <p style={{ fontSize: '13px', color: '#6b8c6b', lineHeight: '1.6' }}>{card.desc}</p>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', color: t.text, marginBottom: '6px' }}>{card.title}</h4>
+                <p style={{ fontSize: '13px', color: t.muted, lineHeight: '1.6' }}>{card.desc}</p>
               </div>
             ))}
           </div>
@@ -102,12 +114,8 @@ export default function HomePage() {
 
       {/* HOW IT WORKS */}
       <div style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto' }}>
-        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>
-          How It Works
-        </p>
-        <p style={{ fontSize: '11px', color: '#6b8c6b', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>
-          Four simple steps
-        </p>
+        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>How It Works</p>
+        <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>Four simple steps</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           {[
             { step: '01', title: 'Register', desc: 'Create your account with your institutional details' },
@@ -115,10 +123,10 @@ export default function HomePage() {
             { step: '03', title: 'Submit Abstract', desc: 'Upload your research abstract in PDF or Word format' },
             { step: '04', title: 'Get Results', desc: 'Receive approval and present at the expo in July' },
           ].map(item => (
-            <div key={item.step} style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '12px', padding: '1.25rem' }}>
-              <p style={{ fontSize: '24px', fontWeight: '700', color: '#c8e8b8', fontFamily: 'Georgia, serif', marginBottom: '0.5rem' }}>{item.step}</p>
-              <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#1a2e1a', marginBottom: '6px' }}>{item.title}</h4>
-              <p style={{ fontSize: '13px', color: '#6b8c6b', lineHeight: '1.6' }}>{item.desc}</p>
+            <div key={item.step} style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '12px', padding: '1.25rem', transition: 'all 0.3s' }}>
+              <p style={{ fontSize: '24px', fontWeight: '700', color: dark ? '#2a6a3a' : '#c8e8b8', fontFamily: 'Georgia, serif', marginBottom: '0.5rem' }}>{item.step}</p>
+              <h4 style={{ fontSize: '14px', fontWeight: '600', color: t.text, marginBottom: '6px' }}>{item.title}</h4>
+              <p style={{ fontSize: '13px', color: t.muted, lineHeight: '1.6' }}>{item.desc}</p>
             </div>
           ))}
         </div>
@@ -126,9 +134,7 @@ export default function HomePage() {
 
       {/* CTA BANNER */}
       <div style={{ background: '#0d5e2e', padding: '4rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#fff', marginBottom: '1rem' }}>
-          Ready to Submit?
-        </h2>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#fff', marginBottom: '1rem' }}>Ready to Submit?</h2>
         <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem' }}>
           Registration closes June 15, 2026. Secure your spot today.
         </p>
@@ -139,12 +145,8 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <div style={{ background: '#0a4a24', padding: '2rem', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>
-          © 2026 HITEC Research Society, HITEC-IMS · All rights reserved
-        </p>
-        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginTop: '4px' }}>
-          Built by @FaatehAurangzaib
-        </p>
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>© 2026 HITEC Institute of Medical Sciences, Taxila · All rights reserved</p>
+        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginTop: '4px' }}>Built by Paragon South</p>
       </div>
 
     </div>

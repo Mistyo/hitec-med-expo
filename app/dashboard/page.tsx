@@ -76,7 +76,6 @@ export default function DashboardPage() {
       .upload(filePath, file)
 
     if (uploadError) {
-      console.log('Upload error:', uploadError)
       setError(uploadError.message)
       setUploading(false)
       return
@@ -97,7 +96,6 @@ export default function DashboardPage() {
       })
 
     if (insertError) {
-      console.log('Insert error:', insertError)
       setError(insertError.message)
       setUploading(false)
       return
@@ -129,120 +127,131 @@ export default function DashboardPage() {
   )
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8faf6' }}>
-      <nav style={{ background: '#0d5e2e', padding: '0 2rem', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
-          HITEC Med Expo 2026
-        </span>
-        <button
-          onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
-          style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', padding: '7px 18px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
-        >
-          Sign Out
-        </button>
-      </nav>
+    <>
+      <style>{`
+        @media (max-width: 600px) {
+          .dash-submission { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+          .dash-submission-actions { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+          .dash-nav-brand { font-size: 14px !important; }
+          .dash-wrap { padding: 1.25rem !important; }
+        }
+      `}</style>
 
-      <div style={{ padding: '2rem', maxWidth: '680px', margin: '0 auto' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', color: '#0d5e2e' }}>
-            Welcome, {profile.full_name}
-          </h1>
-          <p style={{ fontSize: '14px', color: '#6b8c6b', marginTop: '4px' }}>
-            {profile.institution} · {profile.year_of_study}
-          </p>
-          <span style={{ display: 'inline-block', background: '#e8f5e2', color: '#0d5e2e', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '500', marginTop: '8px', border: '1px solid #b8dca8' }}>
-            ✓ Payment Verified — Account Active
+      <div style={{ minHeight: '100vh', background: '#f8faf6' }}>
+        <nav style={{ background: '#0d5e2e', padding: '0 1.25rem', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span className="dash-nav-brand" style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
+            HITEC Med Expo 2026
           </span>
-        </div>
+          <button
+            onClick={async () => { await supabase.auth.signOut(); router.push('/login') }}
+            style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', padding: '7px 14px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap' }}
+          >
+            Sign Out
+          </button>
+        </nav>
 
-        {!abstract ? (
-          <div style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '16px', padding: '2rem' }}>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#0d5e2e', marginBottom: '0.5rem' }}>
-              Submit Your Abstract
-            </h2>
-            <p style={{ fontSize: '13px', color: '#6b8c6b', marginBottom: '1.5rem' }}>
-              PDF or Word (.docx) only · Max 10MB · One submission per registrant
+        <div className="dash-wrap" style={{ padding: '2rem', maxWidth: '680px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '2rem' }}>
+            <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.2rem, 4vw, 1.5rem)', color: '#0d5e2e' }}>
+              Welcome, {profile.full_name}
+            </h1>
+            <p style={{ fontSize: '14px', color: '#6b8c6b', marginTop: '4px' }}>
+              {profile.institution} · {profile.year_of_study}
             </p>
+            <span style={{ display: 'inline-block', background: '#e8f5e2', color: '#0d5e2e', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '500', marginTop: '8px', border: '1px solid #b8dca8' }}>
+              ✓ Payment Verified — Account Active
+            </span>
+          </div>
 
-            <div
-              style={{ border: '2px dashed #9acc88', borderRadius: '12px', padding: '2.5rem', textAlign: 'center', background: '#fafefa', marginBottom: '1rem', cursor: 'pointer' }}
-              onClick={() => document.getElementById('abstract-input')?.click()}
-            >
-              {file ? (
-                <p style={{ fontSize: '14px', color: '#0d5e2e', fontWeight: '500' }}>✓ {file.name}</p>
-              ) : (
-                <>
-                  <p style={{ fontSize: '32px', marginBottom: '8px' }}>📄</p>
-                  <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a2e1a' }}>Click to choose file</p>
-                  <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '4px' }}>PDF or DOCX · Max 10MB</p>
-                </>
+          {!abstract ? (
+            <div style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '16px', padding: '1.5rem' }}>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#0d5e2e', marginBottom: '0.5rem' }}>
+                Submit Your Abstract
+              </h2>
+              <p style={{ fontSize: '13px', color: '#6b8c6b', marginBottom: '1.5rem' }}>
+                PDF or Word (.docx) only · Max 10MB · One submission per registrant
+              </p>
+
+              <div
+                style={{ border: '2px dashed #9acc88', borderRadius: '12px', padding: '2rem', textAlign: 'center', background: '#fafefa', marginBottom: '1rem', cursor: 'pointer' }}
+                onClick={() => document.getElementById('abstract-input')?.click()}
+              >
+                {file ? (
+                  <p style={{ fontSize: '14px', color: '#0d5e2e', fontWeight: '500', wordBreak: 'break-all' }}>✓ {file.name}</p>
+                ) : (
+                  <>
+                    <p style={{ fontSize: '32px', marginBottom: '8px' }}>📄</p>
+                    <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a2e1a' }}>Tap to choose file</p>
+                    <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '4px' }}>PDF or DOCX · Max 10MB</p>
+                  </>
+                )}
+              </div>
+
+              <input
+                id="abstract-input"
+                type="file"
+                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                style={{ display: 'none' }}
+                onChange={e => setFile(e.target.files?.[0] || null)}
+              />
+
+              {error && (
+                <p style={{ color: '#a02020', fontSize: '13px', marginBottom: '1rem', background: '#fdecea', padding: '10px', borderRadius: '8px' }}>
+                  {error}
+                </p>
+              )}
+
+              {success && (
+                <p style={{ color: '#0d5e2e', fontSize: '13px', marginBottom: '1rem', background: '#e8f5e2', padding: '10px', borderRadius: '8px' }}>
+                  ✅ Abstract submitted successfully!
+                </p>
+              )}
+
+              <button
+                onClick={handleUpload}
+                disabled={!file || uploading}
+                style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!file || uploading) ? 'not-allowed' : 'pointer', opacity: (!file || uploading) ? 0.6 : 1 }}
+              >
+                {uploading ? 'Uploading...' : 'Submit Abstract →'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '16px', padding: '1.5rem' }}>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#0d5e2e', marginBottom: '1.5rem' }}>
+                Your Submission
+              </h2>
+              <div className="dash-submission" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f8faf6', borderRadius: '10px', border: '1px solid #e0edd8' }}>
+                <div>
+                  <p style={{ fontWeight: '600', fontSize: '14px', color: '#1a2e1a', wordBreak: 'break-all' }}>{abstract.file_name}</p>
+                  <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '2px' }}>
+                    Submitted {new Date(abstract.submitted_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="dash-submission-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+                  {statusBadge(abstract.status)}
+                  <a href={abstract.file_url} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: '#0d5e2e', fontWeight: '500', whiteSpace: 'nowrap' }}>View →</a>
+                </div>
+              </div>
+
+              {abstract.status === 'rejected' && (
+                <div style={{ marginTop: '1rem', background: '#fdecea', borderRadius: '10px', padding: '1rem' }}>
+                  <p style={{ fontSize: '13px', color: '#a02020' }}>
+                    Your abstract was rejected. Please contact the organizing committee for more information.
+                  </p>
+                </div>
+              )}
+
+              {abstract.status === 'approved' && (
+                <div style={{ marginTop: '1rem', background: '#e8f5e2', borderRadius: '10px', padding: '1rem' }}>
+                  <p style={{ fontSize: '13px', color: '#0d5e2e' }}>
+                    🎉 Congratulations! Your abstract has been approved. Further details will be sent to your email.
+                  </p>
+                </div>
               )}
             </div>
-
-            <input
-              id="abstract-input"
-              type="file"
-              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              style={{ display: 'none' }}
-              onChange={e => setFile(e.target.files?.[0] || null)}
-            />
-
-            {error && (
-              <p style={{ color: '#a02020', fontSize: '13px', marginBottom: '1rem', background: '#fdecea', padding: '10px', borderRadius: '8px' }}>
-                {error}
-              </p>
-            )}
-
-            {success && (
-              <p style={{ color: '#0d5e2e', fontSize: '13px', marginBottom: '1rem', background: '#e8f5e2', padding: '10px', borderRadius: '8px' }}>
-                ✅ Abstract submitted successfully!
-              </p>
-            )}
-
-            <button
-              onClick={handleUpload}
-              disabled={!file || uploading}
-              style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!file || uploading) ? 'not-allowed' : 'pointer', opacity: (!file || uploading) ? 0.6 : 1 }}
-            >
-              {uploading ? 'Uploading...' : 'Submit Abstract →'}
-            </button>
-          </div>
-        ) : (
-          <div style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '16px', padding: '2rem' }}>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#0d5e2e', marginBottom: '1.5rem' }}>
-              Your Submission
-            </h2>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#f8faf6', borderRadius: '10px', border: '1px solid #e0edd8' }}>
-              <div>
-                <p style={{ fontWeight: '600', fontSize: '14px', color: '#1a2e1a' }}>{abstract.file_name}</p>
-                <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '2px' }}>
-                  Submitted {new Date(abstract.submitted_at).toLocaleDateString()}
-                </p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {statusBadge(abstract.status)}
-                <a href={abstract.file_url} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: '#0d5e2e', fontWeight: '500' }}>View →</a>
-              </div>
-            </div>
-
-            {abstract.status === 'rejected' && (
-              <div style={{ marginTop: '1rem', background: '#fdecea', borderRadius: '10px', padding: '1rem' }}>
-                <p style={{ fontSize: '13px', color: '#a02020' }}>
-                  Your abstract was rejected. Please contact the organizing committee for more information.
-                </p>
-              </div>
-            )}
-
-            {abstract.status === 'approved' && (
-              <div style={{ marginTop: '1rem', background: '#e8f5e2', borderRadius: '10px', padding: '1rem' }}>
-                <p style={{ fontSize: '13px', color: '#0d5e2e' }}>
-                  🎉 Congratulations! Your abstract has been approved. Further details will be sent to your email.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
