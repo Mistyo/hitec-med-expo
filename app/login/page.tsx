@@ -110,9 +110,10 @@ export default function LoginPage() {
           </p>
 
           <div style={{ textAlign: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e0edd8' }}>
-            <Link href="/admin" style={{ fontSize: '12px', color: '#9ab89a', textDecoration: 'none' }}>
-              Admin access →
-            </Link>
+            <p style={{ fontSize: '12px', color: '#9ab89a' }}>
+              Admin: use your admin credentials above ↑
+            </p>
+       
           </div>
 
         </div>

@@ -41,8 +41,13 @@ export default function AdminPage() {
   }, [])
 
   const checkAdminAndLoad = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+    console.log('User:', user, 'Error:', userError)
+
     if (!user) { router.push('/login'); return }
+
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -74,6 +79,17 @@ export default function AdminPage() {
     })
     const data = await res.json()
     console.log('Verify response:', res.status, data)
+    if (res.ok) await loadData()
+    setActionLoading(null)
+  }
+  
+  const rejectPayment = async (userId: string) => {
+    setActionLoading(userId + '-reject')
+    const res = await fetch('/api/reject-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    })
     if (res.ok) await loadData()
     setActionLoading(null)
   }
@@ -203,14 +219,50 @@ export default function AdminPage() {
                         </td>
                         <td style={{ padding: '12px 16px' }}>
                           {p.payment_status === 'pending_verification' && (
-                            <button onClick={() => verifyPayment(p.id)} disabled={actionLoading === p.id}
-                              style={{ background: '#0d5e2e', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '500', cursor: 'pointer', opacity: actionLoading === p.id ? 0.6 : 1 }}>
-                              {actionLoading === p.id ? 'Verifying...' : 'Verify ✓'}
-                            </button>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button
+                                onClick={() => verifyPayment(p.id)}
+                                disabled={actionLoading === p.id}
+                                style={{
+                                  background: '#0d5e2e',
+                                  color: '#fff',
+                                  border: 'none',
+                                  padding: '6px 14px',
+                                  borderRadius: '6px',
+                                  fontSize: '12px',
+                                  fontWeight: '500',
+                                  cursor: 'pointer',
+                                  opacity: actionLoading === p.id ? 0.6 : 1
+                                }}
+                              >
+                                {actionLoading === p.id ? 'Verifying...' : 'Verify ✓'}
+                              </button>
+                              <button
+                                onClick={() => rejectPayment(p.id)}
+                                disabled={actionLoading === p.id + '-reject'}
+                                style={{
+                                  background: '#fdecea',
+                                  color: '#a02020',
+                                  border: 'none',
+                                  padding: '6px 14px',
+                                  borderRadius: '6px',
+                                  fontSize: '12px',
+                                  fontWeight: '500',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                Reject ✗
+                              </button>
+                            </div>
                           )}
-                          {p.payment_status === 'verified' && <span style={{ color: '#9ab89a', fontSize: '12px' }}>Done</span>}
-                          {p.payment_status === 'unpaid' && <span style={{ color: '#ccc', fontSize: '12px' }}>Awaiting</span>}
+                          {p.payment_status === 'verified' && (
+                            <span style={{ color: '#9ab89a', fontSize: '12px' }}>Done</span>
+                          )}
+                          {p.payment_status === 'unpaid' && (
+                            <span style={{ color: '#ccc', fontSize: '12px' }}>Awaiting</span>
+                          )}
                         </td>
+                   
                       </tr>
                     ))}
                     {profiles.length === 0 && (
@@ -255,11 +307,45 @@ export default function AdminPage() {
                       </div>
                     </div>
                     {p.payment_status === 'pending_verification' && (
-                      <button onClick={() => verifyPayment(p.id)} disabled={actionLoading === p.id}
-                        style={{ width: '100%', background: '#0d5e2e', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', opacity: actionLoading === p.id ? 0.6 : 1 }}>
-                        {actionLoading === p.id ? 'Verifying...' : 'Verify Payment ✓'}
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => verifyPayment(p.id)}
+                          disabled={actionLoading === p.id}
+                          style={{
+                            flex: 1,
+                            background: '#0d5e2e',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '10px',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            opacity: actionLoading === p.id ? 0.6 : 1
+                          }}
+                        >
+                          {actionLoading === p.id ? 'Verifying...' : 'Verify ✓'}
+                        </button>
+                        <button
+                          onClick={() => rejectPayment(p.id)}
+                          disabled={actionLoading === p.id + '-reject'}
+                          style={{
+                            flex: 1,
+                            background: '#fdecea',
+                            color: '#a02020',
+                            border: 'none',
+                            padding: '10px',
+                            borderRadius: '8px',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Reject ✗
+                        </button>
+                      </div>
                     )}
+               
                   </div>
                 ))}
               </div>

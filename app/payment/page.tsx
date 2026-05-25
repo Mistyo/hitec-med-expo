@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import BackButton from '@/components/BackButton'
+import { useState, useEffect } from 'react'
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -14,6 +14,25 @@ export default function PaymentPage() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('payment_status')
+        .eq('id', user.id)
+        .single()
+
+      if (profile?.payment_status === 'verified') {
+        router.push('/dashboard')
+      }
+    }
+
+    checkPaymentStatus()
+  }, [])
 
   const handleScreenshotUpload = async () => {
     if (!screenshot) return
