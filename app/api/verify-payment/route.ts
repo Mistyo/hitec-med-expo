@@ -24,11 +24,22 @@ export async function POST(req: NextRequest) {
 
   const { error: updateError } = await adminSupabase
     .from('profiles')
-    .update({ payment_status: 'verified' })
+    .update({
+      payment_status: 'verified',
+      id_card_url: null,
+    })
     .eq('id', userId)
 
   if (updateError) {
     return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+  }
+
+  // Delete ID card from storage
+  const idCardExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'webp']
+  for (const ext of idCardExtensions) {
+    await adminSupabase.storage
+      .from('Abstracts')
+      .remove([`id-cards/${userId}.${ext}`])
   }
 
   const { error: emailError } = await resend.emails.send({
@@ -81,10 +92,7 @@ export async function POST(req: NextRequest) {
 
   if (emailError) {
     console.error('Email failed:', emailError)
-    return NextResponse.json({ success: true, emailError: emailError.message })
   }
-
-  console.log('Email sent successfully')
 
   return NextResponse.json({ success: true })
 }

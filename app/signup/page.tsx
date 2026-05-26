@@ -110,6 +110,8 @@ export default function SignupPage() {
     email: '',
     institution: '',
     year_of_study: '',
+    cnic: '',
+    whatsapp: '',
     password: '',
   })
 
@@ -136,6 +138,8 @@ export default function SignupPage() {
           full_name: form.full_name,
           institution: form.institution,
           year_of_study: form.year_of_study,
+          cnic: form.cnic,
+          whatsapp: form.whatsapp,
         }
       }
     })
@@ -173,8 +177,11 @@ export default function SignupPage() {
               { label: 'Full Name', name: 'full_name', type: 'text', placeholder: 'Your full name' },
               { label: 'Email Address', name: 'email', type: 'email', placeholder: 'your@email.com' },
               { label: 'Institution', name: 'institution', type: 'text', placeholder: 'e.g. HITEC IMS, AKU...' },
+              { label: 'CNIC Number', name: 'cnic', type: 'text', placeholder: '12345-1234567-1' },
+              { label: 'WhatsApp Number', name: 'whatsapp', type: 'text', placeholder: '03XX-XXXXXXX' },
               { label: 'Password', name: 'password', type: 'password', placeholder: 'Min. 8 characters' },
             ].map(field => (
+       
               <div key={field.name} style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#2a4a2a', marginBottom: '5px' }}>
                   {field.label}

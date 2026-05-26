@@ -11,6 +11,7 @@ export default function PaymentPage() {
 
   const [method, setMethod] = useState<'online' | 'manual' | null>(null)
   const [screenshot, setScreenshot] = useState<File | null>(null)
+  const [idCard, setIdCard] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -35,40 +36,56 @@ export default function PaymentPage() {
   }, [])
 
   const handleScreenshotUpload = async () => {
-    if (!screenshot) return
+    if (!screenshot || !idCard) return
     setUploading(true)
     setError('')
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
 
-    const fileExt = screenshot.name.split('.').pop()
-    const filePath = `payment-screenshots/${user.id}.${fileExt}`
+    const screenshotExt = screenshot.name.split('.').pop()
+    const screenshotPath = `payment-screenshots/${user.id}.${screenshotExt}`
 
-    const { error: uploadError } = await supabase.storage
+    const { error: screenshotError } = await supabase.storage
       .from('Abstracts')
-      .upload(filePath, screenshot, { upsert: true })
+      .upload(screenshotPath, screenshot, { upsert: true })
 
-    if (uploadError) {
-      console.log('Upload error:', uploadError)
-      setError(uploadError.message)
+    if (screenshotError) {
+      setError(screenshotError.message)
       setUploading(false)
       return
     }
 
-    const { data: signedUrlData } = await supabase.storage
+    const idCardExt = idCard.name.split('.').pop()
+    const idCardPath = `id-cards/${user.id}.${idCardExt}`
+
+    const { error: idCardError } = await supabase.storage
       .from('Abstracts')
-      .createSignedUrl(filePath, 60 * 60 * 24 * 5) // 5 days
+      .upload(idCardPath, idCard, { upsert: true })
+
+    if (idCardError) {
+      setError(idCardError.message)
+      setUploading(false)
+      return
+    }
+
+    const { data: screenshotUrlData } = await supabase.storage
+      .from('Abstracts')
+      .createSignedUrl(screenshotPath, 60 * 60 * 24 * 5)
+
+    const { data: idCardUrlData } = await supabase.storage
+      .from('Abstracts')
+      .createSignedUrl(idCardPath, 60 * 60 * 24 * 5)
 
     await supabase
       .from('profiles')
       .update({
         payment_method: 'manual',
         payment_status: 'pending_verification',
-        payment_screenshot_url: signedUrlData?.signedUrl || '',
+        payment_screenshot_url: screenshotUrlData?.signedUrl || '',
+        id_card_url: idCardUrlData?.signedUrl || '',
       })
       .eq('id', user.id)
- 
 
     setSuccess(true)
     setUploading(false)
@@ -293,6 +310,29 @@ export default function PaymentPage() {
                 onChange={e => setScreenshot(e.target.files?.[0] || null)}
 
               />
+              <div
+  style={{ border: '2px dashed #9acc88', borderRadius: '12px', padding: '2rem', textAlign: 'center', background: '#fafefa', marginBottom: '1rem', cursor: 'pointer' }}
+  onClick={() => document.getElementById('idcard-input')?.click()}
+>
+  {idCard ? (
+    <p style={{ fontSize: '14px', color: '#0d5e2e', fontWeight: '500' }}>✓ {idCard.name}</p>
+  ) : (
+    <>
+      <p style={{ fontSize: '24px', marginBottom: '8px' }}>🪪</p>
+      <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a2e1a' }}>Upload Student ID Card</p>
+      <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '4px' }}>JPG, PNG or PDF · Max 5MB</p>
+    </>
+  )}
+</div>
+
+<input
+  id="idcard-input"
+  type="file"
+  accept="image/*,.pdf"
+  style={{ display: 'none' }}
+  onChange={e => setIdCard(e.target.files?.[0] || null)}
+/>
+              
 
 
 
@@ -309,18 +349,13 @@ export default function PaymentPage() {
 
 
               <button
-
                 onClick={handleScreenshotUpload}
-
-                disabled={!screenshot || uploading}
-
-                style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!screenshot || uploading) ? 'not-allowed' : 'pointer', opacity: (!screenshot || uploading) ? 0.6 : 1, marginBottom: '1rem' }}
-
+                disabled={!screenshot || !idCard || uploading}
+                style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!screenshot || !idCard || uploading) ? 'not-allowed' : 'pointer', opacity: (!screenshot || !idCard || uploading) ? 0.6 : 1, marginBottom: '1rem' }}
               >
-
-                {uploading ? 'Submitting...' : 'Submit Payment Screenshot →'}
-
+                {uploading ? 'Submitting... please wait ⏳' : 'Submit Payment & ID Card →'}
               </button>
+         
 
 
 

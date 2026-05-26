@@ -13,6 +13,9 @@ type Profile = {
   payment_status: string
   payment_method: string
   payment_screenshot_url: string
+  id_card_url: string
+  cnic: string
+  whatsapp: string
   created_at: string
 }
 
@@ -41,13 +44,9 @@ export default function AdminPage() {
   }, [])
 
   const checkAdminAndLoad = async () => {
-
     const { data: { user }, error: userError } = await supabase.auth.getUser()
-
     console.log('User:', user, 'Error:', userError)
-
     if (!user) { router.push('/login'); return }
-
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -82,7 +81,7 @@ export default function AdminPage() {
     if (res.ok) await loadData()
     setActionLoading(null)
   }
-  
+
   const rejectPayment = async (userId: string) => {
     setActionLoading(userId + '-reject')
     const res = await fetch('/api/reject-payment', {
@@ -163,7 +162,6 @@ export default function AdminPage() {
 
         <div className="admin-wrap" style={{ padding: '1.5rem', maxWidth: '1100px', margin: '0 auto' }}>
 
-          {/* STATS */}
           <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '1.5rem' }}>
             {[
               { label: 'Total Registered', val: stats.total, color: '#0d5e2e' },
@@ -178,7 +176,6 @@ export default function AdminPage() {
             ))}
           </div>
 
-          {/* TABS */}
           <div style={{ display: 'flex', borderBottom: '1px solid #d4e8cc', marginBottom: '1.5rem' }}>
             {(['payments', 'abstracts'] as const).map(t => (
               <button
@@ -191,26 +188,27 @@ export default function AdminPage() {
             ))}
           </div>
 
-          {/* DESKTOP TABLE */}
           {tab === 'payments' && (
             <>
-              <div className="admin-table-wrap" style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '12px', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <div className="admin-table-wrap" style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '12px', overflow: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '900px' }}>
                   <thead>
                     <tr style={{ background: '#f0f7eb' }}>
-                      {['Name', 'Email', 'Institution', 'Year', 'Method', 'Status', 'Screenshot', 'Action'].map(h => (
-                        <th key={h} style={{ padding: '10px 16px', textAlign: 'left', color: '#3a6a3a', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #d4e8cc' }}>{h}</th>
+                      {['Name', 'Email', 'Institution', 'Year', 'CNIC', 'WhatsApp', 'Method', 'Status', 'Screenshot', 'ID Card', 'Action'].map(h => (
+                        <th key={h} style={{ padding: '10px 16px', textAlign: 'left', color: '#3a6a3a', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #d4e8cc', whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {profiles.map(p => (
                       <tr key={p.id} style={{ borderBottom: '1px solid #f0f7eb' }}>
-                        <td style={{ padding: '12px 16px', fontWeight: '500' }}>{p.full_name}</td>
+                        <td style={{ padding: '12px 16px', fontWeight: '500', whiteSpace: 'nowrap' }}>{p.full_name}</td>
                         <td style={{ padding: '12px 16px', color: '#6b8c6b' }}>{p.email}</td>
-                        <td style={{ padding: '12px 16px' }}>{p.institution}</td>
-                        <td style={{ padding: '12px 16px' }}>{p.year_of_study}</td>
-                        <td style={{ padding: '12px 16px', textTransform: 'capitalize' }}>{p.payment_method || '—'}</td>
+                        <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>{p.institution}</td>
+                        <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>{p.year_of_study}</td>
+                        <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>{p.cnic || '—'}</td>
+                        <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>{p.whatsapp || '—'}</td>
+                        <td style={{ padding: '12px 16px', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{p.payment_method || '—'}</td>
                         <td style={{ padding: '12px 16px' }}>{statusBadge(p.payment_status)}</td>
                         <td style={{ padding: '12px 16px' }}>
                           {p.payment_screenshot_url
@@ -218,61 +216,35 @@ export default function AdminPage() {
                             : <span style={{ color: '#ccc' }}>—</span>}
                         </td>
                         <td style={{ padding: '12px 16px' }}>
+                          {p.id_card_url
+                            ? <a href={p.id_card_url} target="_blank" rel="noreferrer" style={{ color: '#0d5e2e', fontSize: '12px', fontWeight: '500' }}>View →</a>
+                            : <span style={{ color: '#ccc' }}>—</span>}
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
                           {p.payment_status === 'pending_verification' && (
                             <div style={{ display: 'flex', gap: '6px' }}>
-                              <button
-                                onClick={() => verifyPayment(p.id)}
-                                disabled={actionLoading === p.id}
-                                style={{
-                                  background: '#0d5e2e',
-                                  color: '#fff',
-                                  border: 'none',
-                                  padding: '6px 14px',
-                                  borderRadius: '6px',
-                                  fontSize: '12px',
-                                  fontWeight: '500',
-                                  cursor: 'pointer',
-                                  opacity: actionLoading === p.id ? 0.6 : 1
-                                }}
-                              >
+                              <button onClick={() => verifyPayment(p.id)} disabled={actionLoading === p.id}
+                                style={{ background: '#0d5e2e', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '500', cursor: 'pointer', opacity: actionLoading === p.id ? 0.6 : 1 }}>
                                 {actionLoading === p.id ? 'Verifying...' : 'Verify ✓'}
                               </button>
-                              <button
-                                onClick={() => rejectPayment(p.id)}
-                                disabled={actionLoading === p.id + '-reject'}
-                                style={{
-                                  background: '#fdecea',
-                                  color: '#a02020',
-                                  border: 'none',
-                                  padding: '6px 14px',
-                                  borderRadius: '6px',
-                                  fontSize: '12px',
-                                  fontWeight: '500',
-                                  cursor: 'pointer'
-                                }}
-                              >
+                              <button onClick={() => rejectPayment(p.id)} disabled={actionLoading === p.id + '-reject'}
+                                style={{ background: '#fdecea', color: '#a02020', border: 'none', padding: '6px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: '500', cursor: 'pointer' }}>
                                 Reject ✗
                               </button>
                             </div>
                           )}
-                          {p.payment_status === 'verified' && (
-                            <span style={{ color: '#9ab89a', fontSize: '12px' }}>Done</span>
-                          )}
-                          {p.payment_status === 'unpaid' && (
-                            <span style={{ color: '#ccc', fontSize: '12px' }}>Awaiting</span>
-                          )}
+                          {p.payment_status === 'verified' && <span style={{ color: '#9ab89a', fontSize: '12px' }}>Done</span>}
+                          {p.payment_status === 'unpaid' && <span style={{ color: '#ccc', fontSize: '12px' }}>Awaiting</span>}
                         </td>
-                   
                       </tr>
                     ))}
                     {profiles.length === 0 && (
-                      <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: '#6b8c6b' }}>No registrations yet</td></tr>
+                      <tr><td colSpan={11} style={{ padding: '2rem', textAlign: 'center', color: '#6b8c6b' }}>No registrations yet</td></tr>
                     )}
                   </tbody>
                 </table>
               </div>
 
-              {/* MOBILE CARDS */}
               <div className="admin-cards-wrap">
                 {profiles.length === 0 && (
                   <p style={{ textAlign: 'center', color: '#6b8c6b', padding: '2rem' }}>No registrations yet</p>
@@ -296,6 +268,14 @@ export default function AdminPage() {
                         <p style={{ fontSize: '13px', color: '#1a2e1a', marginTop: '2px' }}>{p.year_of_study}</p>
                       </div>
                       <div>
+                        <p style={{ fontSize: '11px', color: '#6b8c6b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>CNIC</p>
+                        <p style={{ fontSize: '13px', color: '#1a2e1a', marginTop: '2px' }}>{p.cnic || '—'}</p>
+                      </div>
+                      <div>
+                        <p style={{ fontSize: '11px', color: '#6b8c6b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>WhatsApp</p>
+                        <p style={{ fontSize: '13px', color: '#1a2e1a', marginTop: '2px' }}>{p.whatsapp || '—'}</p>
+                      </div>
+                      <div>
                         <p style={{ fontSize: '11px', color: '#6b8c6b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Method</p>
                         <p style={{ fontSize: '13px', color: '#1a2e1a', marginTop: '2px', textTransform: 'capitalize' }}>{p.payment_method || '—'}</p>
                       </div>
@@ -305,47 +285,25 @@ export default function AdminPage() {
                           ? <a href={p.payment_screenshot_url} target="_blank" rel="noreferrer" style={{ fontSize: '13px', color: '#0d5e2e', fontWeight: '500' }}>View →</a>
                           : <p style={{ fontSize: '13px', color: '#ccc' }}>—</p>}
                       </div>
+                      <div>
+                        <p style={{ fontSize: '11px', color: '#6b8c6b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>ID Card</p>
+                        {p.id_card_url
+                          ? <a href={p.id_card_url} target="_blank" rel="noreferrer" style={{ fontSize: '13px', color: '#0d5e2e', fontWeight: '500' }}>View →</a>
+                          : <p style={{ fontSize: '13px', color: '#ccc' }}>—</p>}
+                      </div>
                     </div>
                     {p.payment_status === 'pending_verification' && (
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button
-                          onClick={() => verifyPayment(p.id)}
-                          disabled={actionLoading === p.id}
-                          style={{
-                            flex: 1,
-                            background: '#0d5e2e',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '10px',
-                            borderRadius: '8px',
-                            fontSize: '13px',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            opacity: actionLoading === p.id ? 0.6 : 1
-                          }}
-                        >
+                        <button onClick={() => verifyPayment(p.id)} disabled={actionLoading === p.id}
+                          style={{ flex: 1, background: '#0d5e2e', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', opacity: actionLoading === p.id ? 0.6 : 1 }}>
                           {actionLoading === p.id ? 'Verifying...' : 'Verify ✓'}
                         </button>
-                        <button
-                          onClick={() => rejectPayment(p.id)}
-                          disabled={actionLoading === p.id + '-reject'}
-                          style={{
-                            flex: 1,
-                            background: '#fdecea',
-                            color: '#a02020',
-                            border: 'none',
-                            padding: '10px',
-                            borderRadius: '8px',
-                            fontSize: '13px',
-                            fontWeight: '600',
-                            cursor: 'pointer'
-                          }}
-                        >
+                        <button onClick={() => rejectPayment(p.id)} disabled={actionLoading === p.id + '-reject'}
+                          style={{ flex: 1, background: '#fdecea', color: '#a02020', border: 'none', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
                           Reject ✗
                         </button>
                       </div>
                     )}
-               
                   </div>
                 ))}
               </div>
@@ -398,7 +356,6 @@ export default function AdminPage() {
                 </table>
               </div>
 
-              {/* MOBILE CARDS */}
               <div className="admin-cards-wrap">
                 {abstracts.length === 0 && (
                   <p style={{ textAlign: 'center', color: '#6b8c6b', padding: '2rem' }}>No abstracts submitted yet</p>

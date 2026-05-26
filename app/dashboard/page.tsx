@@ -18,6 +18,7 @@ type Abstract = {
   file_url: string
   status: string
   submitted_at: string
+  presentation_type: string
 }
 
 export default function DashboardPage() {
@@ -27,6 +28,7 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [abstract, setAbstract] = useState<Abstract | null>(null)
   const [file, setFile] = useState<File | null>(null)
+  const [presentationType, setPresentationType] = useState<'poster' | 'oral' | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -61,7 +63,7 @@ export default function DashboardPage() {
   }
 
   const handleUpload = async () => {
-    if (!file) return
+    if (!file || !presentationType) return
     setUploading(true)
     setError('')
 
@@ -92,7 +94,8 @@ export default function DashboardPage() {
         file_url: signedUrlData?.signedUrl || '',
         file_name: file.name,
         file_size: file.size,
-        status: 'pending'
+        status: 'pending',
+        presentation_type: presentationType,
       })
 
     if (insertError) {
@@ -172,6 +175,46 @@ export default function DashboardPage() {
                 PDF or Word (.docx) only · Max 10MB · One submission per registrant
               </p>
 
+              <p style={{ fontSize: '13px', fontWeight: '600', color: '#2a4a2a', marginBottom: '10px' }}>
+                Presentation Type
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '1.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setPresentationType('oral')}
+                  style={{
+                    padding: '1rem',
+                    border: `2px solid ${presentationType === 'oral' ? '#0d5e2e' : '#d4e8cc'}`,
+                    borderRadius: '10px',
+                    background: presentationType === 'oral' ? '#e8f5e2' : '#fff',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <p style={{ fontSize: '24px', marginBottom: '6px' }}>🎤</p>
+                  <p style={{ fontSize: '14px', fontWeight: '600', color: presentationType === 'oral' ? '#0d5e2e' : '#1a2e1a' }}>Oral</p>
+                  <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '2px' }}>Articulated presentation </p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresentationType('poster')}
+                  style={{
+                    padding: '1rem',
+                    border: `2px solid ${presentationType === 'poster' ? '#0d5e2e' : '#d4e8cc'}`,
+                    borderRadius: '10px',
+                    background: presentationType === 'poster' ? '#e8f5e2' : '#fff',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <p style={{ fontSize: '24px', marginBottom: '6px' }}>🪧</p>
+                  <p style={{ fontSize: '14px', fontWeight: '600', color: presentationType === 'poster' ? '#0d5e2e' : '#1a2e1a' }}>Poster</p>
+                  <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '2px' }}>Display presentation</p>
+                </button>
+              </div>
+
               <div
                 style={{ border: '2px dashed #9acc88', borderRadius: '12px', padding: '2rem', textAlign: 'center', background: '#fafefa', marginBottom: '1rem', cursor: 'pointer' }}
                 onClick={() => document.getElementById('abstract-input')?.click()}
@@ -209,10 +252,10 @@ export default function DashboardPage() {
 
               <button
                 onClick={handleUpload}
-                disabled={!file || uploading}
-                style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!file || uploading) ? 'not-allowed' : 'pointer', opacity: (!file || uploading) ? 0.6 : 1 }}
+                disabled={!file || !presentationType || uploading}
+                style={{ width: '100%', background: '#0d5e2e', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: (!file || !presentationType || uploading) ? 'not-allowed' : 'pointer', opacity: (!file || !presentationType || uploading) ? 0.6 : 1 }}
               >
-                {uploading ? 'Uploading...' : 'Submit Abstract →'}
+                {uploading ? 'Uploading... please wait ⏳' : 'Submit Abstract →'}
               </button>
             </div>
           ) : (
@@ -226,6 +269,11 @@ export default function DashboardPage() {
                   <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '2px' }}>
                     Submitted {new Date(abstract.submitted_at).toLocaleDateString()}
                   </p>
+                  {abstract.presentation_type && (
+                    <span style={{ display: 'inline-block', background: '#f0f7eb', color: '#0d5e2e', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '500', marginTop: '6px', border: '1px solid #d4e8cc', textTransform: 'capitalize' }}>
+                      {abstract.presentation_type === 'oral' ? '🎤' : '🪧'} {abstract.presentation_type}
+                    </span>
+                  )}
                 </div>
                 <div className="dash-submission-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
                   {statusBadge(abstract.status)}
