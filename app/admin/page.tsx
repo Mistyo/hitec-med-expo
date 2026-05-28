@@ -26,6 +26,7 @@ type Abstract = {
   file_name: string
   status: string
   submitted_at: string
+  presentation_type: string
   profiles: Profile
 }
 
@@ -313,11 +314,11 @@ export default function AdminPage() {
           {tab === 'abstracts' && (
             <>
               <div className="admin-table-wrap" style={{ background: '#fff', border: '1px solid #d4e8cc', borderRadius: '12px', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '700px' }}>
                   <thead>
                     <tr style={{ background: '#f0f7eb' }}>
-                      {['Student', 'Institution', 'File', 'Submitted', 'Status', 'Actions'].map(h => (
-                        <th key={h} style={{ padding: '10px 16px', textAlign: 'left', color: '#3a6a3a', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #d4e8cc' }}>{h}</th>
+                      {['Student', 'Institution', 'File', 'Type', 'Submitted', 'Status', 'Actions'].map(h => (
+                        <th key={h} style={{ padding: '10px 16px', textAlign: 'left', color: '#3a6a3a', fontWeight: '600', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #d4e8cc', whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -328,6 +329,11 @@ export default function AdminPage() {
                         <td style={{ padding: '12px 16px', color: '#6b8c6b' }}>{a.profiles?.institution}</td>
                         <td style={{ padding: '12px 16px' }}>
                           <a href={a.file_url} target="_blank" rel="noreferrer" style={{ color: '#0d5e2e', fontSize: '12px', fontWeight: '500' }}>{a.file_name} →</a>
+                        </td>
+                        <td style={{ padding: '12px 16px' }}>
+                          <span style={{ background: '#f0f7eb', color: '#0d5e2e', padding: '2px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '500', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>
+                            {a.presentation_type === 'oral' ? '🎤' : '🪧'} {a.presentation_type || '—'}
+                          </span>
                         </td>
                         <td style={{ padding: '12px 16px', color: '#6b8c6b' }}>{new Date(a.submitted_at).toLocaleDateString()}</td>
                         <td style={{ padding: '12px 16px' }}>{statusBadge(a.status)}</td>
@@ -350,7 +356,7 @@ export default function AdminPage() {
                       </tr>
                     ))}
                     {abstracts.length === 0 && (
-                      <tr><td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#6b8c6b' }}>No abstracts submitted yet</td></tr>
+                      <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: '#6b8c6b' }}>No abstracts submitted yet</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -373,6 +379,11 @@ export default function AdminPage() {
                       <p style={{ fontSize: '11px', color: '#6b8c6b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Abstract</p>
                       <a href={a.file_url} target="_blank" rel="noreferrer" style={{ fontSize: '13px', color: '#0d5e2e', fontWeight: '500' }}>{a.file_name} →</a>
                       <p style={{ fontSize: '12px', color: '#6b8c6b', marginTop: '4px' }}>Submitted {new Date(a.submitted_at).toLocaleDateString()}</p>
+                      {a.presentation_type && (
+                        <span style={{ display: 'inline-block', background: '#f0f7eb', color: '#0d5e2e', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '500', marginTop: '6px', textTransform: 'capitalize' }}>
+                          {a.presentation_type === 'oral' ? '🎤' : '🪧'} {a.presentation_type}
+                        </span>
+                      )}
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       {a.status !== 'approved' && (
@@ -383,7 +394,7 @@ export default function AdminPage() {
                       )}
                       {a.status !== 'rejected' && (
                         <button onClick={() => updateAbstractStatus(a.id, 'rejected')} disabled={actionLoading === a.id}
-                          style={{ flex: 1, background: '#fdecea', color: '#a02020', border: 'none', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>
+                          style={{ flex: 1, background: '#fdecea', color: '#a02020', border: 'none', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: '606', cursor: 'pointer' }}>
                           Reject ✗
                         </button>
                       )}

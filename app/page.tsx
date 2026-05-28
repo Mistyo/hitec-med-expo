@@ -22,9 +22,22 @@ export default function HomePage() {
 
       {/* NAV */}
       <nav style={{ background: '#0d5e2e', padding: '0 2rem', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
-        <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
-          HITEC Med Expo 2026
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img
+            src="hitec_logo1.PNG"
+            alt="HITEC"
+            style={{
+              height: '125px',
+              width: '125px',
+              objectFit: 'contain',
+              filter: 'brightness(0) invert(1)'
+            }}
+          />
+          <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
+            HITEC Med Expo 2026
+          </span>
+        </div>
+  
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button
             onClick={toggleTheme}
@@ -42,26 +55,49 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <div style={{ background: 'linear-gradient(160deg, #0a4a24 0%, #0d5e2e 50%, #1a7a3e 100%)', padding: '5rem 2rem 4rem', textAlign: 'center', color: '#fff', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '30px 30px', pointerEvents: 'none' }} />
-        <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
-          HITEC Institute of Medical Sciences · Taxila
-        </p>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: '700', lineHeight: '1.15', marginBottom: '1rem' }}>
-          HITEC Med Expo <span style={{ color: '#a8e6be' }}>2026</span>
-        </h1>
-        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', maxWidth: '520px', margin: '0 auto 2rem', lineHeight: '1.7' }}>
-          Pakistan's premier student medical research exposition. Submit your abstract, present your findings, and shape the future of medicine.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/signup" style={{ background: '#fff', color: '#0d5e2e', padding: '13px 32px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', textDecoration: 'none' }}>
-            Submit Your Abstract
-          </Link>
-          <Link href="/login" style={{ background: 'transparent', color: '#fff', padding: '13px 32px', borderRadius: '8px', fontWeight: '500', fontSize: '14px', textDecoration: 'none', border: '2px solid rgba(255,255,255,0.4)' }}>
-            Already Registered?
-          </Link>
+      <div
+        style={{
+          backgroundImage: 'url(/background12.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          padding: '5rem 2rem 4rem',
+          textAlign: 'right',
+          color: '#fff',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.04,
+            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+            backgroundSize: '30px 30px',
+            pointerEvents: 'none',
+          }}
+        />
+        <div style={{ maxWidth: '620px', marginLeft: 'auto', position: 'relative', zIndex: 2 }}>
+          <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
+            HITEC Institute of Medical Sciences · Taxila
+          </p>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: '700', lineHeight: '1.15', marginBottom: '1rem' }}>
+            HITEC Med Expo <span style={{ color: '#a8e6be' }}>2026</span>
+          </h1>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', marginBottom: '2rem' }}>
+            Pakistan's premier student medical research exposition. Submit your abstract, present your findings, and shape the future of medicine.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <Link href="/signup" style={{ background: '#fff', color: '#0d5e2e', padding: '13px 32px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', textDecoration: 'none' }}>
+              Submit Your Abstract
+            </Link>
+            <Link href="/login" style={{ background: 'transparent', color: '#fff', padding: '13px 32px', borderRadius: '8px', fontWeight: '500', fontSize: '14px', textDecoration: 'none', border: '2px solid rgba(255,255,255,0.4)' }}>
+              Already Registered?
+            </Link>
+          </div>
         </div>
       </div>
+
 
       {/* INFO STRIP */}
       <div style={{ background: t.strip, borderBottom: `1px solid ${t.stripBorder}`, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', transition: 'background 0.3s' }}>
