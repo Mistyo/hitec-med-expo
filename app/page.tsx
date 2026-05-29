@@ -20,9 +20,32 @@ export default function HomePage() {
   return (
     <div style={{ minHeight: '100vh', background: t.bg, fontFamily: 'DM Sans, sans-serif', transition: 'background 0.3s' }}>
 
+      <style>{`
+        @media (max-width: 600px) {
+          .nav-logo-text { display: none !important; }
+          .nav-theme-label { display: none !important; }
+          .hero-section { padding: 2.5rem 1.25rem 2rem !important; text-align: left !important; }
+          .hero-inner { text-align: left !important; margin-left: 0 !important; max-width: 100% !important; }
+          .hero-inner h1 { font-size: 2rem !important; }
+          .hero-inner p { font-size: 14px !important; }
+          .hero-btns { justify-content: flex-start !important; }
+          .hero-btns a { padding: 11px 20px !important; font-size: 13px !important; }
+          .info-strip { grid-template-columns: 1fr 1fr !important; }
+          .info-strip-item { border-right: none !important; border-bottom: 1px solid ${t.stripBorder}; }
+          .section-pad { padding: 2.5rem 1.25rem !important; }
+          .cards-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+          .cta-section { padding: 3rem 1.25rem !important; }
+          .cta-section h2 { font-size: 1.5rem !important; }
+        }
+        @media (max-width: 380px) {
+          .cards-grid { grid-template-columns: 1fr !important; }
+          .hero-inner h1 { font-size: 1.6rem !important; }
+        }
+      `}</style>
+
       {/* NAV */}
-      <nav style={{ background: '#0d5e2e', padding: '0 2rem', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <nav style={{ background: '#0d5e2e', padding: '0 1rem', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <img
             src="hitec_logo1.PNG"
             alt="HITEC"
@@ -30,25 +53,26 @@ export default function HomePage() {
               height: '125px',
               width: '125px',
               objectFit: 'contain',
-              filter: 'brightness(0) invert(1)'
+              filter: 'brightness(0) invert(1)',
+              flexShrink: 0,
             }}
           />
-          <span style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600' }}>
+          <span className="nav-logo-text" style={{ color: '#fff', fontFamily: 'Georgia, serif', fontSize: '16px', fontWeight: '600', whiteSpace: 'nowrap' }}>
             HITEC Med Expo 2026
           </span>
         </div>
-  
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
           <button
             onClick={toggleTheme}
-            style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 14px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
+            style={{ background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 10px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', whiteSpace: 'nowrap' }}
           >
-            {dark ? '☀️ Light' : '🌙 Dark'}
+            {dark ? '☀️' : '🌙'} <span className="nav-theme-label">{dark ? 'Light' : 'Dark'}</span>
           </button>
-          <Link href="/login" style={{ padding: '7px 18px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', textDecoration: 'none' }}>
+          <Link href="/login" style={{ padding: '7px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1.5px solid rgba(255,255,255,0.5)', color: '#fff', textDecoration: 'none', whiteSpace: 'nowrap' }}>
             Sign In
           </Link>
-          <Link href="/signup" style={{ padding: '7px 18px', borderRadius: '6px', fontSize: '13px', fontWeight: '600', background: '#fff', color: '#0d5e2e', textDecoration: 'none' }}>
+          <Link href="/signup" style={{ padding: '7px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '600', background: '#fff', color: '#0d5e2e', textDecoration: 'none', whiteSpace: 'nowrap' }}>
             Register
           </Link>
         </div>
@@ -56,6 +80,7 @@ export default function HomePage() {
 
       {/* HERO */}
       <div
+        className="hero-section"
         style={{
           backgroundImage: 'url(/background12.png)',
           backgroundSize: 'cover',
@@ -77,17 +102,17 @@ export default function HomePage() {
             pointerEvents: 'none',
           }}
         />
-        <div style={{ maxWidth: '620px', marginLeft: 'auto', position: 'relative', zIndex: 2 }}>
+        <div className="hero-inner" style={{ maxWidth: '620px', marginLeft: 'auto', position: 'relative', zIndex: 2 }}>
           <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
             HITEC Institute of Medical Sciences · Taxila
           </p>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: '700', lineHeight: '1.15', marginBottom: '1rem' }}>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '700', lineHeight: '1.15', marginBottom: '1rem' }}>
             HITEC Med Expo <span style={{ color: '#a8e6be' }}>2026</span>
           </h1>
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', marginBottom: '2rem' }}>
             Pakistan's premier student medical research exposition. Submit your abstract, present your findings, and shape the future of medicine.
           </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+          <div className="hero-btns" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
             <Link href="/signup" style={{ background: '#fff', color: '#0d5e2e', padding: '13px 32px', borderRadius: '8px', fontWeight: '600', fontSize: '14px', textDecoration: 'none' }}>
               Submit Your Abstract
             </Link>
@@ -98,16 +123,15 @@ export default function HomePage() {
         </div>
       </div>
 
-
       {/* INFO STRIP */}
-      <div style={{ background: t.strip, borderBottom: `1px solid ${t.stripBorder}`, display: 'flex', justifyContent: 'center', flexWrap: 'wrap', transition: 'background 0.3s' }}>
+      <div className="info-strip" style={{ background: t.strip, borderBottom: `1px solid ${t.stripBorder}`, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', transition: 'background 0.3s' }}>
         {[
           { label: 'Date', value: 'July 2026' },
           { label: 'Venue', value: 'HITEC IMS, Taxila' },
           { label: 'Submission Deadline', value: 'June 15, 2026' },
           { label: 'Registration Fee', value: 'PKR 1,500' },
         ].map(item => (
-          <div key={item.label} style={{ padding: '1.25rem 2rem', textAlign: 'center', borderRight: `1px solid ${t.stripBorder}` }}>
+          <div className="info-strip-item" key={item.label} style={{ padding: '1.25rem 1rem', textAlign: 'center', borderRight: `1px solid ${t.stripBorder}` }}>
             <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase' }}>{item.label}</p>
             <p style={{ fontSize: '15px', fontWeight: '600', color: '#0d5e2e', marginTop: '3px' }}>{item.value}</p>
           </div>
@@ -115,7 +139,7 @@ export default function HomePage() {
       </div>
 
       {/* ABOUT */}
-      <div style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto', transition: 'all 0.3s' }}>
+      <div className="section-pad" style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto', transition: 'all 0.3s' }}>
         <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>About the Expo</p>
         <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '1.5rem' }}>HITEC Medical Research Exposition 2026</p>
         <p style={{ fontSize: '15px', color: t.text, lineHeight: '1.8', marginBottom: '1rem' }}>
@@ -128,10 +152,10 @@ export default function HomePage() {
 
       {/* WHY PARTICIPATE */}
       <div style={{ background: t.sectionBg, padding: '4rem 2rem', transition: 'background 0.3s' }}>
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className="section-pad" style={{ maxWidth: '860px', margin: '0 auto', padding: '0' }}>
           <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>Why Participate?</p>
           <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>Open to all medical and dental students across Pakistan</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+          <div className="cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
             {[
               { icon: '🔬', title: 'Present Research', desc: 'Oral and poster presentation categories across all specialties' },
               { icon: '🏆', title: 'Win Awards', desc: 'Cash prizes and certificates for top abstracts in each category' },
@@ -149,10 +173,10 @@ export default function HomePage() {
       </div>
 
       {/* HOW IT WORKS */}
-      <div style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto' }}>
+      <div className="section-pad" style={{ padding: '4rem 2rem', maxWidth: '860px', margin: '0 auto' }}>
         <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: '600', color: '#0d5e2e', marginBottom: '0.5rem' }}>How It Works</p>
         <p style={{ fontSize: '11px', color: t.muted, fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '2rem' }}>Four simple steps</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+        <div className="cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           {[
             { step: '01', title: 'Register', desc: 'Create your account with your institutional details' },
             { step: '02', title: 'Pay Fee', desc: 'Complete registration fee via JazzCash, Easypaisa, or card' },
@@ -169,7 +193,7 @@ export default function HomePage() {
       </div>
 
       {/* CTA BANNER */}
-      <div style={{ background: '#0d5e2e', padding: '4rem 2rem', textAlign: 'center' }}>
+      <div className="cta-section" style={{ background: '#0d5e2e', padding: '4rem 2rem', textAlign: 'center' }}>
         <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#fff', marginBottom: '1rem' }}>Ready to Submit?</h2>
         <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.8)', marginBottom: '2rem', maxWidth: '400px', margin: '0 auto 2rem' }}>
           Registration closes June 15, 2026. Secure your spot today.
