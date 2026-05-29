@@ -24,12 +24,47 @@ export default function HomePage() {
         @media (max-width: 600px) {
           .nav-logo-text { display: none !important; }
           .nav-theme-label { display: none !important; }
-          .hero-section { padding: 2.5rem 1.25rem 2rem !important; text-align: left !important; }
-          .hero-inner { text-align: left !important; margin-left: 0 !important; max-width: 100% !important; }
-          .hero-inner h1 { font-size: 2rem !important; }
-          .hero-inner p { font-size: 14px !important; }
-          .hero-btns { justify-content: flex-start !important; }
-          .hero-btns a { padding: 11px 20px !important; font-size: 13px !important; }
+          
+          nav img {
+            height: 55px !important;
+            width: 55px !important;
+          }
+          
+          .hero-section { 
+            padding: 3.5rem 1.25rem 3.5rem !important; 
+            text-align: right !important; 
+            background-color: #061409 !important; 
+            background-repeat: no-repeat !important; 
+            background-position: -280px center !important; /* Shifted much further left */
+            background-size: cover !important; 
+            display: flex !important;
+            justify-content: flex-end !important;
+          }
+          
+          .hero-inner { 
+            text-align: right !important; 
+            margin-left: auto !important; 
+            margin-right: 0 !important;
+            max-width: 75% !important; 
+          }
+          
+          .hero-inner h1 { font-size: 1.85rem !important; }
+          .hero-inner p { font-size: 13px !important; }
+          
+          .hero-btns { 
+            justify-content: flex-end !important; 
+            flex-direction: column !important;
+            align-items: flex-end !important;
+            gap: 10px !important;
+          }
+          .hero-btns a { 
+            width: 100% !important;
+            max-width: 220px !important;
+            padding: 11px 20px !important; 
+            font-size: 13px !important; 
+            text-align: center !important;
+          }
+          
           .info-strip { grid-template-columns: 1fr 1fr !important; }
           .info-strip-item { border-right: none !important; border-bottom: 1px solid ${t.stripBorder}; }
           .section-pad { padding: 2.5rem 1.25rem !important; }
@@ -40,6 +75,8 @@ export default function HomePage() {
         @media (max-width: 380px) {
           .cards-grid { grid-template-columns: 1fr !important; }
           .hero-inner h1 { font-size: 1.6rem !important; }
+          .hero-inner { max-width: 80% !important; }
+          .hero-section { background-position: -280px center !important; } /* Shifted even further for tiny screens */
         }
       `}</style>
 
@@ -84,8 +121,8 @@ export default function HomePage() {
         style={{
           backgroundImage: 'url(/background12.png)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          padding: '5rem 2rem 4rem',
+          backgroundPosition: 'right center',
+          padding: '6rem 2rem 5rem',
           textAlign: 'right',
           color: '#fff',
           position: 'relative',
@@ -103,13 +140,13 @@ export default function HomePage() {
           }}
         />
         <div className="hero-inner" style={{ maxWidth: '620px', marginLeft: 'auto', position: 'relative', zIndex: 2 }}>
-          <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '12px', fontWeight: '500', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.95)', textShadow: '0 0 4px #a8e6be, 0 0 8px #a8e6be, 0 0 2px #a8e6be', marginBottom: '1rem' }}>
             HITEC Institute of Medical Sciences · Taxila
           </p>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '700', lineHeight: '1.15', marginBottom: '1rem' }}>
             HITEC Med Expo <span style={{ color: '#a8e6be' }}>2026</span>
           </h1>
-          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.7', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.95)', textShadow: '0 0 4px #a8e6be, 0 0 8px #a8e6be, 0 0 2px #a8e6be', lineHeight: '1.7', marginBottom: '2rem' }}>
             Pakistan's premier student medical research exposition. Submit your abstract, present your findings, and shape the future of medicine.
           </p>
           <div className="hero-btns" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
